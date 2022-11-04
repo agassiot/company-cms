@@ -1,4 +1,4 @@
-import mysql from 'mysql2'
+import mysql from 'mysql2/promise'
 import inquirer from 'inquirer'
 
 
@@ -8,12 +8,18 @@ const queryString2 = 'AS manangername FROM employee LEFT JOIN role ON employee.r
 
 
 
-const connection = mysql.createConnection({ host: 'localhost', user: 'root', password:'rootroot', database: 'corporate_db', });
+const connection =  await mysql.createConnection({ 
+    host: 'localhost', 
+    port: 3306,
+    user: 'root',
+    password:'rootroot', 
+    database: 'company_db', 
+  });
 
 inquire();
 
 
-async function inquire() {
+ function inquire() {
   const commands = await inquirer.prompt([{
     type: 'list',
     name: 'menu',
@@ -41,8 +47,8 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
 
 
 
-  async function view(query) {
-    let [entries] =  connection.execute(`SELECT * FROM ${query};`);
+   function view(query) {
+    let [entries] =  await connection.execute(`SELECT * FROM ${query};`);
     console.log(`${query}s`);
 
     console.table(entries);
@@ -50,7 +56,7 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
   }
 
 
-  async function viewEmployees() {
+   function viewEmployees() {
     let [entries] =  connection.execute(`${queryString} ${queryString2}`);
 
     console.table(entries);
@@ -58,7 +64,7 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
   }
 
 
-  async function addADepartment() {
+   function addADepartment() {
     let newDepartment = await inquirer.prompt([
       {
         type: 'input',
@@ -73,7 +79,7 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
 
 
 
-  async function addARole() {
+   function addARole() {
     let newRole = await inquirer.prompt([
       {
         type: 'input',
@@ -101,11 +107,11 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
 
 
 
-  async function addAEmployee() {
-    let [rows] = connection.execute(`SELECT * From employee`);
+   function addAEmployee() {
+    let [rows] = await connection.execute(`SELECT * From employee`);
     console.table(rows);
 
-    let [roles] = connection.execute(`SELECT * From role`);
+    let [roles] = await connection.execute(`SELECT * From role`);
     console.log(roles);
 
     let newEmployee = await inquirer.prompt([
@@ -118,17 +124,17 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
       {
         type: 'input',
         name: 'first_name',
-        message: " employee first name ?",
+        message: " employee first name:",
       },
       {
         type: 'input',
         name: 'last_name',
-        message: " employee last name ?",
+        message: " employee last name:",
       },
       {
         type: 'list',
         name: 'manager_id',
-        message: 'who is the manager? ',
+        message: 'corresponding manager:',
         choices: rows.map(emp => ({ value: emp.id, name: `${emp.first_name} ${emp.last_name}` }))
   
       }
@@ -141,7 +147,7 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
 
 
 
-  async function updateAEmployee() {
+   function updateAEmployee() {
     let [employees] =  connection.execute(`SELECT first_name AS name , id AS value  FROM employee;`);
     let [roles] =  connection.execute(`SELECT  id AS value, title AS name  FROM role;`);
     
