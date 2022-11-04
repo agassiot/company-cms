@@ -1,0 +1,16 @@
+{
+  "name": "company-cms",
+  "version": "1.0.0",
+  "description": "search and update company db",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "∆ix",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^9.1.4",
+    "mysql2": "^2.3.3"
+  }
+}
