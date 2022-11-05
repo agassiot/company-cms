@@ -3,8 +3,9 @@ import inquirer from 'inquirer'
 
 
 
-const queryString = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, CONCAT(newemp.first_name, " " ,newemp.last_name)';
-const queryString2 = 'AS manangername FROM employee LEFT JOIN role ON employee.role_id=role.id LEFT JOIN department ON role.department_id=department.id LEFT JOIN employee AS newemp ON newemp.id=employee.manager_id;`)';
+const getInfo = 'SELECT employee.id, employee.first_name, employee.last_name, role.role, department.department, role.salary, CONCAT(themanager.first_name, " " ,themanager.last_name)';
+const joinManager = 'AS manager FROM employee LEFT JOIN role AS role ON employee.role_id=role.id LEFT JOIN department AS department ON role.department_id=department.id LEFT JOIN employee AS themanager ON themanager.id=employee.manager_id';
+const orderTable = 'ORDER BY department.id;'
 
 
 
@@ -19,19 +20,19 @@ const connection =  await mysql.createConnection({
 inquire();
 
 
- function inquire() {
+ async function inquire() {
   const commands = await inquirer.prompt([{
     type: 'list',
     name: 'menu',
     message: "What would you like to do ",
     choices: [
-                  'view all departments',
-                  'view all roles',
-                  'view all employees',
-                  'add a department',
-                  'add a role',
-                  'add an employee',
-                  'update an employee role ',
+                  'view departments',
+                  'view roles',
+                  'view employees',
+                  'add department',
+                  'add role',
+                  'add employee',
+                  'update role ',
                   'exit'
             ]
   }]);
@@ -42,12 +43,12 @@ commands.menu == "view employees"   ? viewEmployees() :
 commands.menu == "add department"   ? addADepartment() :
 commands.menu == "add employee"     ? addAEmployee() :
 commands.menu == "add role"         ? addARole() :
-commands.menu == "update role "     ? updateAEmployee() : process.exit();
+commands.menu == "update role "     ? updateAEmployee() : console.log('err');
 };
 
 
 
-   function view(query) {
+   async function view(query) {
     let [entries] =  await connection.execute(`SELECT * FROM ${query};`);
     console.log(`${query}s`);
 
@@ -56,15 +57,15 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
   }
 
 
-   function viewEmployees() {
-    let [entries] =  connection.execute(`${queryString} ${queryString2}`);
-
+   async function viewEmployees() {
+    let [entries] =  await connection.execute(`${getInfo} ${joinManager} ${orderTable}`);
+    console.log(entries)
     console.table(entries);
     inquire();
   }
 
 
-   function addADepartment() {
+   async function addADepartment() {
     let newDepartment = await inquirer.prompt([
       {
         type: 'input',
@@ -73,13 +74,13 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
       },
     ]);
 
-   connection.query('INSERT INTO department SET ?', [newDepartment]);
+   await connection.query('INSERT INTO department SET ?', [newDepartment]);
     inquire();
   }
 
 
 
-   function addARole() {
+   async function addARole() {
     let newRole = await inquirer.prompt([
       {
         type: 'input',
@@ -101,13 +102,13 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
     ]);
     console.log(newRole);
 
-     connection.query('INSERT INTO role SET ?', [newRole]);
+     await connection.query('INSERT INTO role SET ?', [newRole]);
     inquire();
   }
 
 
 
-   function addAEmployee() {
+   async function addAEmployee() {
     let [rows] = await connection.execute(`SELECT * From employee`);
     console.table(rows);
 
@@ -141,15 +142,15 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
     ]);
     console.log(newEmployee);
 
-     connection.query('INSERT INTO employee SET ?', newEmployee);
+     await connection.query('INSERT INTO employee SET ?', newEmployee);
     inquire();
   }
 
 
 
-   function updateAEmployee() {
-    let [employees] =  connection.execute(`SELECT first_name AS name , id AS value  FROM employee;`);
-    let [roles] =  connection.execute(`SELECT  id AS value, title AS name  FROM role;`);
+   async function updateAEmployee() {
+    let [employees] =  await connection.execute(`SELECT first_name AS name , id AS value  FROM employee;`);
+    let [roles] =  await connection.execute(`SELECT  id AS value, title AS name  FROM role;`);
     
     let update = await inquirer.prompt([
       {
@@ -172,7 +173,7 @@ commands.menu == "update role "     ? updateAEmployee() : process.exit();
       }
     ]);
 
-     connection.query('UPDATE employee SET ? WHERE ?', [
+     await connection.query('UPDATE employee SET ? WHERE ?', [
         {manager_id:update.manager},
         {id:update.id}]);
 

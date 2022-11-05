@@ -1,21 +1,21 @@
 
-INSERT INTO corporate_db.department (name)
+INSERT INTO company_db.department (department)
 VALUES ('Da Board');
-INSERT INTO corporate_db.department (name)
+INSERT INTO company_db.department (department)
 VALUES ('Mayhem');
-INSERT INTO corporate_db.department (name)
+INSERT INTO company_db.department (department)
 VALUES ('Murders & Acquistions');
-INSERT INTO corporate_db.department (name)
+INSERT INTO company_db.department (department)
 VALUES ('Gofers');
-INSERT INTO corporate_db.department (name)
+INSERT INTO company_db.department (department)
 VALUES ('Wheelmen');
-INSERT INTO corporate_db.department (name)
+INSERT INTO company_db.department (department)
 VALUES ('CleanUp');
 
 
 
 
-INSERT INTO corporate_db.role (title, salary, department_id)
+INSERT INTO company_db.role (role, salary, department_id)
 VALUES 
 ('President', 100000000, 1 ),
 ('ArmsDealer', 65000,2),
@@ -24,7 +24,7 @@ VALUES
 ('Driver', 75000, 5), 
 ('CoffeeGuy', 300000, 6);
 
-INSERT INTO corporate_db.employee (first_name, last_name, role_id, manager_id)
+INSERT INTO company_db.employee (first_name, last_name, role_id, manager_id)
 VALUES 
 ('Andy', 'Smith', '1',  NULL ),
 ('Patrick', 'Bateman', '2', '1'),
