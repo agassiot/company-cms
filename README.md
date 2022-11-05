@@ -48,7 +48,7 @@ Still undecided on whether to say 'S-Q-L' or 'sequel'
 
 ## Links
 
-Github Page https://github.com/agassiot
+Github Page https://github.com/agassiot \
 Github Repository https://github.com/agassiot/company-cms
 
 
