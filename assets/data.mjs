@@ -70,7 +70,7 @@ export async function addEmployee() {
             type: 'list',
             name: 'role_id',
             message: 'Employee role?',
-            choices: roles.map(role => ({ value: role.id, name: role.title }))
+            choices: roles.map(role => ({ value: role.id, name: role.role }))
         },
         {
             type: 'input',
@@ -100,7 +100,7 @@ export async function addEmployee() {
 
 export async function update() {
     let [employees] =  await connection.execute(`SELECT first_name AS name , id AS value  FROM employee;`);
-    let [roles] =  await connection.execute(`SELECT  id AS value, title AS name  FROM role;`);
+    let [roles] =  await connection.execute(`SELECT  id AS value, role AS name FROM role;`);
     
     let update = await inquirer.prompt([
         {
